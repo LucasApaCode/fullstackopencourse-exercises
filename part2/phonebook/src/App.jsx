@@ -71,21 +71,28 @@ function App() {
           });
       }
     } else {
-      personService.create(personObject).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson));
-        setNewName("");
-        setNewPhone("");
-        setMessageType("success");
-        setMessage(`Added ${returnedPerson.name}`);
-        setTimeout(() => setMessage(null), 5000);
-      });
+      personService
+        .create(personObject)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson));
+          setNewName("");
+          setNewPhone("");
+          setMessageType("success");
+          setMessage(`Added ${returnedPerson.name}`);
+          setTimeout(() => setMessage(null), 5000);
+        })
+        .catch((error) => {
+          setMessageType("error");
+          setMessage(error.response.data.error);
+          console.log(error.response.data.error);
+        });
     }
   };
 
   const deletePerson = (person) => {
     if (window.confirm(`Delete ${person.name}`)) {
-      personService.deletePerson(person.id).then((returnedPerson) => {
-        setPersons(persons.filter((p) => p.id !== returnedPerson.id));
+      personService.deletePerson(person.id).then(() => {
+        setPersons(persons.filter((p) => p.id !== person.id));
       });
     }
   };
